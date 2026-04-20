@@ -98,37 +98,7 @@ Terminal 2:
 ./windows/run_topology_wsl.sh
 ```
 
-## 6. Demo Commands
-
-Inside the Mininet CLI, use:
-
-```bash
-nodes
-net
-pingall
-h1 ping -c 3 h3
-sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
-sh sudo ovs-ofctl -O OpenFlow13 dump-flows s2
-sh sleep 12
-h1 ping -c 1 h3
-h1 ping -c 5 h3
-h4 iperf3 -s -p 5001 -D
-h1 iperf3 -c 10.0.0.4 -p 5001 -t 5
-sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
-h2 iperf3 -c 10.0.0.4 -p 5001 -t 5
-sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
-sh sudo ovs-ofctl -O OpenFlow13 dump-flows s2
-sh sleep 27
-exit
-```
-
-Or use the main command checklist:
-
-```bash
-cat scripts/demo_commands.txt
-```
-
-## 7. Validation Commands
+## 6. Validation Commands
 
 Run these from another WSL shell:
 
@@ -137,7 +107,7 @@ Run these from another WSL shell:
 .venv/bin/python -m py_compile controller/timeout_manager.py topology/timeout_topology.py flow_timeout_manager/config.py flow_timeout_manager/policy.py tests/test_policy.py scripts/ryu_compat.py
 ```
 
-## 8. Common Issues
+## 7. Common Issues
 
 ### `Unable to contact the remote controller`
 
@@ -166,7 +136,7 @@ sudo service openvswitch-switch start
 
 Move the project into the Ubuntu home directory and run it there.
 
-## 9. Files Added For Windows Users
+## 8. Files Added For Windows Users
 
 - `windows/setup_wsl_ubuntu.sh`
 - `windows/run_controller_wsl.sh`
