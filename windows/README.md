@@ -41,11 +41,13 @@ cd ~
 Clone the repo if using git:
 
 ```bash
-git clone <your-repo-url> cn_orange
-cd cn_orange
+git clone https://github.com/arjunsrikanthh/flow-rule-timeout-manager.git
+cd flow-rule-timeout-manager
 ```
 
 If they already received the project as a zip, extract it and enter the project folder inside Ubuntu.
+
+The top-level `README.md` also has a shorter Ubuntu/WSL quick-start section. This file is the more detailed WSL-specific guide.
 
 Important:
 - Keep the project inside the Linux filesystem, such as `/home/<user>/cn_orange`

@@ -72,9 +72,15 @@ The policy helper functions are isolated in `flow_timeout_manager/policy.py`. Th
 
 ## Setup
 
-This repo is configured to run from the local `.venv` in the project root. The controller start script uses a small compatibility wrapper because `ryu==4.34` still expects `eventlet.wsgi.ALREADY_HANDLED`, which is missing in newer `eventlet` releases.
+This repo runs from a local `.venv` in the project root. The controller start script uses `scripts/ryu_compat.py` because `ryu==4.34` still expects `eventlet.wsgi.ALREADY_HANDLED`, which is missing in newer `eventlet` releases.
 
-Validated environment for this repo:
+Supported ways to run the project:
+
+- Ubuntu or another Linux distribution with Mininet and Open vSwitch available
+- Windows 10/11 through WSL2 with Ubuntu inside WSL
+- native Windows is not supported for Mininet/Open vSwitch execution
+
+Validated during development:
 
 - Arch Linux
 - Python 3.11
@@ -82,34 +88,30 @@ Validated environment for this repo:
 - Mininet 2.3.0.dev6
 - `iperf3`
 
-Project bootstrap:
+## Ubuntu Quick Start
+
+Clone the repository and enter it:
 
 ```bash
-~/.local/bin/uv venv --python 3.11 .venv
-.venv/bin/python -m ensurepip --upgrade
-.venv/bin/python -m pip install "setuptools<58" wheel
-.venv/bin/python -m pip install --no-build-isolation -r requirements.txt
+git clone https://github.com/arjunsrikanthh/flow-rule-timeout-manager.git
+cd flow-rule-timeout-manager
 ```
 
-System packages needed for the live demo:
-
-- `openvswitch`
-- `iperf3`
-- `tcpdump`
-- `net-tools`
-- `socat`
-- `ethtool`
-
-Before starting Mininet, make sure the Open vSwitch service is running:
+Run the Ubuntu setup helper:
 
 ```bash
-sudo systemctl start openvswitch.service
-sudo systemctl is-active openvswitch.service
+chmod +x scripts/setup_ubuntu.sh
+./scripts/setup_ubuntu.sh
 ```
 
-## How To Run
+Start Open vSwitch:
 
-Start the controller first:
+```bash
+sudo service openvswitch-switch start
+sudo service openvswitch-switch status
+```
+
+Start the controller in one terminal:
 
 ```bash
 ./scripts/run_controller.sh
@@ -121,7 +123,97 @@ Start the topology in another terminal:
 ./scripts/run_topology.sh
 ```
 
-You can also follow the ready-made command list in `scripts/demo_commands.txt`. If you want flow-table snapshots, run `./scripts/collect_evidence.sh` from another terminal while Mininet is still active.
+## Windows WSL Quick Start
+
+Install WSL2 with Ubuntu from an elevated PowerShell prompt:
+
+```powershell
+wsl --install -d Ubuntu-22.04
+```
+
+Inside the Ubuntu shell, clone the repo into the Linux filesystem, not `/mnt/c/...`:
+
+```bash
+git clone https://github.com/arjunsrikanthh/flow-rule-timeout-manager.git
+cd flow-rule-timeout-manager
+```
+
+Run the WSL setup helper:
+
+```bash
+chmod +x windows/setup_wsl_ubuntu.sh
+./windows/setup_wsl_ubuntu.sh
+```
+
+Start Open vSwitch inside WSL:
+
+```bash
+sudo service openvswitch-switch start
+sudo service openvswitch-switch status
+```
+
+Start the controller in one WSL terminal:
+
+```bash
+./windows/run_controller_wsl.sh
+```
+
+Start the topology in another WSL terminal:
+
+```bash
+./windows/run_topology_wsl.sh
+```
+
+The WSL-specific scripts are thin wrappers around the same controller and topology used on Linux. The detailed WSL guide is in `windows/README.md`.
+
+## Manual Setup
+
+If you are not using the helper scripts, install these system packages first:
+
+- `python3`
+- `python3-venv`
+- `python3-pip`
+- `build-essential`
+- `openvswitch-switch`
+- `mininet`
+- `iperf3`
+- `tcpdump`
+- `net-tools`
+- `socat`
+- `ethtool`
+
+Then create the virtual environment and install Python dependencies:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip setuptools wheel
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+## How To Run
+
+Use the Linux scripts on Ubuntu:
+
+```bash
+./scripts/run_controller.sh
+./scripts/run_topology.sh
+```
+
+Use the WSL wrappers on Windows+WSL:
+
+```bash
+./windows/run_controller_wsl.sh
+./windows/run_topology_wsl.sh
+```
+
+You can follow the ready-made command list in `scripts/demo_commands.txt`. If you want flow-table snapshots, run `./scripts/collect_evidence.sh` from another terminal while Mininet is still active.
+
+## Platform Notes
+
+- start the controller before starting Mininet, otherwise the switches will fail to connect to the remote controller
+- keep the repository inside the Linux filesystem when using WSL, for example `/home/<user>/flow-rule-timeout-manager`
+- if `mn` or Open vSwitch commands fail, confirm the Open vSwitch service is running before retrying
+- use `iperf3`, not `iperf`, in the demo commands
 
 ## Demo Scenarios
 
