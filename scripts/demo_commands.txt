@@ -1,0 +1,51 @@
+DEMO COMMAND CHECKLIST
+
+Terminal 1
+./scripts/run_controller.sh
+
+Terminal 2
+./scripts/run_topology.sh
+
+Mininet CLI
+
+1. Setup / topology check
+nodes
+net
+pingall
+
+2. Learning-switch forwarding
+h1 ping -c 3 h3
+sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+sh sudo ovs-ofctl -O OpenFlow13 dump-flows s2
+
+3. Idle-timeout proof
+sh sleep 12
+h1 ping -c 1 h3
+
+4. Latency observation
+h1 ping -c 5 h3
+
+5. Start TCP server on h4
+h4 iperf3 -s -p 5001 -D
+
+6. Blocked traffic proof
+h1 iperf3 -c 10.0.0.4 -p 5001 -t 5
+sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+
+7. Allowed traffic + throughput
+h2 iperf3 -c 10.0.0.4 -p 5001 -t 5
+sh sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+sh sudo ovs-ofctl -O OpenFlow13 dump-flows s2
+
+8. Hard-timeout proof for drop rule
+sh sleep 27
+
+9. Save evidence from another terminal while Mininet is still running
+./scripts/collect_evidence.sh
+
+10. Validation from another terminal if needed
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m py_compile controller/timeout_manager.py topology/timeout_topology.py flow_timeout_manager/config.py flow_timeout_manager/policy.py tests/test_policy.py scripts/ryu_compat.py
+
+11. Exit
+exit

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+
+.venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+artifacts/
+platform_bundles/
+platform_bundles.zip
+
+mininetclioutput.md
+run_controlleroutput.md
+chat.txt
+.codex

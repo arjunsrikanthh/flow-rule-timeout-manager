@@ -1,0 +1,4 @@
+eventlet==0.33.3
+mininet==2.3.0.dev6
+ryu==4.34
+setuptools<58
